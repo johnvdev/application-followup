@@ -2,7 +2,8 @@
 
 class Interview
 {
-	public $title = 'Interview test';
+	//variable should be static
+	public static $title = 'Interview test';
 }
 
 $lipsum = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus incidunt, quasi aliquid, quod officia commodi magni eum? Provident, sed necessitatibus perferendis nisi illum quos, incidunt sit tempora quasi, pariatur natus.';
@@ -15,7 +16,11 @@ $people = array(
 	array('id'=>5, 'first_name'=>'Doug', 'last_name'=>'Simons', 'email'=>'doug.simons@hotmail.com')
 );
 
-$person = $_POST['person'];
+//should always check if person exists in post first
+if(isset($_POST['person'])) {
+	$person = $_POST['person'];
+}
+
 
 ?>
 
@@ -25,7 +30,8 @@ $person = $_POST['person'];
 	<meta charset="UTF-8">
 	<title>Interview test</title>
 	<style>
-		body {font: normal 14px/1.5 sans-serif;}
+		<!-- comma needed -->
+		body {font: normal 14px/1.5, sans-serif;}
 	</style>
 </head>
 <body>
@@ -34,16 +40,18 @@ $person = $_POST['person'];
 
 	<?php
 	// Print 10 times
-	for ($i=10; $i<0; $i++) {
-		echo '<p>'+$lipsum+'</p>';
+	// 10 and zero should be switched or the loop will never ittereate
+	// string concatenation in php uses '.' instead of "+"
+	for ($i=0; $i<10; $i++) {
+		echo '<p>'.$lipsum.'</p>';
 	}
 	?>
 
 
 	<hr>
 
-
-	<form method="get" action="<?=$_SERVER['REQUEST_URI'];?>">
+	<!-- method should be post -->
+	<form method="post" action="<?=$_SERVER['REQUEST_URI'];?>">
 		<p><label for="firstName">First name</label> <input type="text" name="person[first_name]" id="firstName"></p>
 		<p><label for="lastName">Last name</label> <input type="text" name="person[last_name]" id="lastName"></p>
 		<p><label for="email">Email</label> <input type="text" name="person[email]" id="email"></p>
@@ -51,7 +59,8 @@ $person = $_POST['person'];
 	</form>
 
 	<?php if ($person): ?>
-		<p><strong>Person</strong> <?=$person['first_name'];?>, <?=$person['last_name'];?>, <?=$person['email'];?></p>
+	//the output needs filtering
+		<p><strong>Person</strong> <?=htmlspecialchars($person['first_name']);?>, <?=htmlspecialchars($person['last_name']);?>, <?=htmlspecialchars($person['email']);?></p>
 	<?php endif; ?>
 
 
@@ -69,9 +78,10 @@ $person = $_POST['person'];
 		<tbody>
 			<?php foreach ($people as $person): ?>
 				<tr>
-					<td><?=$person->first_name;?></td>
-					<td><?=$person->last_name;?></td>
-					<td><?=$person->email;?></td>
+					<!-- person needs filtering and array is accessed  wrong
+					<td><?=htmlspecialchars($person['first_name']);?></td>
+					<td><?=htmlspecialchars($person['last_name']);?></td>
+					<td><?=htmlspecialchars($person['email']);?></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>
